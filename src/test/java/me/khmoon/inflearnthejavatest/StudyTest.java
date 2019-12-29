@@ -15,29 +15,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class StudyTest {
 
-  @BeforeAll
-  static void beforeAll() {
-    System.out.println("before all");
+  int value = 1;
+
+  @FastTest
+  @DisplayName("스터디 만들기 fast")
+  void create_new_study() {
+    System.out.println(this);
+    System.out.println(value++);
+    Study actual = new Study(1);
+    assertThat(actual.getLimit()).isGreaterThan(0);
   }
 
   @SlowTest
   @DisplayName("스터디 만들기 slow")
   void create_new_study_again() {
-    System.out.println("create1");
-  }
-
-  @AfterAll
-  static void afterAll() {
-    System.out.println("after all");
-  }
-
-  @FastTest
-  @DisplayName("스터디 만들기 fast")
-  void create_new_study() {
-    Study actual = new Study(10);
-    assertThat(actual.getLimit()).isGreaterThan(0);
+    System.out.println(this);
+    System.out.println("create1 " + value++);
   }
 
   @DisplayName("스터디 만들기")
@@ -61,16 +57,6 @@ class StudyTest {
     System.out.println(study);
   }
 
-  @BeforeEach
-  void beforeEach() {
-    System.out.println("before each");
-  }
-
-  @AfterEach
-  void afterEach() {
-    System.out.println("after each");
-  }
-
   static class StudyAggregator implements ArgumentsAggregator {
     @Override
     public Object aggregateArguments(ArgumentsAccessor argumentsAccessor, ParameterContext parameterContext) throws ArgumentsAggregationException {
@@ -84,6 +70,26 @@ class StudyTest {
       assertEquals(Study.class, targetType, "Can only convert to Study");
       return new Study(Integer.parseInt(source.toString()));
     }
+  }
+
+  @BeforeAll
+  void beforeAll() {
+    System.out.println("before all");
+  }
+
+  @AfterAll
+  void afterAll() {
+    System.out.println("after all");
+  }
+
+  @BeforeEach
+  void beforeEach() {
+    System.out.println("before each");
+  }
+
+  @AfterEach
+  void afterEach() {
+    System.out.println("after each");
   }
 
 }
